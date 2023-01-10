@@ -8,6 +8,8 @@ jobs:
         run: npm install -g yarn
       - name: Get project
         uses: actions/checkout@v3
+      - name: Install dependencies
+        run: yarn install
       - name: Test project
         run: yarn test
   deploy:
@@ -17,6 +19,8 @@ jobs:
         run: npm install -g yarn
       - name: Get project
         uses: actions/checkout@v3
+      - name: Install dependencies
+        run: yarn install
       - name: Build project
         run: yarn build
       - name: Deploy project
