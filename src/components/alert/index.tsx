@@ -14,6 +14,7 @@ const Alert = styled(MuiAlert)(() => ({
   border: '1px solid transparent',
 }));
 
+// Custom styling the Mui Box component
 const Box = styled(MuiBox)(() => ({
   bottom: '6em',
   width: '100vw',
