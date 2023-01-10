@@ -1,0 +1,23 @@
+name: Deployment Parallel
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install yarn globally
+        run: npm install -g yarn
+      - name: Get project
+        uses: actions/checkout@v3
+      - name: Test project
+        run: yarn test
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install yarn globally
+        run: npm install -g yarn
+      - name: Get project
+        uses: actions/checkout@v3
+      - name: Build project
+        run: yarn build
+      - name: Deploy project
+        run: echo "Deployed.."
