@@ -1,5 +1,12 @@
 name: Deployment Parallel
-on: push
+on:
+  workflow_dispatch:
+  pull-request:
+    types:
+      - opened
+    branches:
+      - main
+      - master
 jobs:
   test:
     runs-on: ubuntu-latest
