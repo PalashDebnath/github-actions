@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get project
-        run: actions/checkout@v3
+        uses: actions/checkout@v3
       - name: Install dependencies
         run: npm install
       - name: Test project
@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get project
-        run: actions/checkout@v3
+        uses: actions/checkout@v3
       - name: Install dependencies
         run: npm install
       - name: Build project
