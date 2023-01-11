@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Get artifact
-        run: actions/download-artifact@v3
+        uses: actions/download-artifact@v3
         with:
           name: artifact
       - name: Output artifact content
