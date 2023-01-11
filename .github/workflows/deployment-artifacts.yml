@@ -1,0 +1,43 @@
+name: Deployment Artifacts
+on:
+  push:
+    branches:
+      - main
+      - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get project
+        run: actions/checkout@v3
+      - name: Install dependencies
+        run: npm install
+      - name: Test project
+        run: npm run test
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get project
+        run: actions/checkout@v3
+      - name: Install dependencies
+        run: npm install
+      - name: Build project
+        run: npm run build
+      - name: Upload artifacts
+        uses: actions/upload-actifact@v3
+        with:
+          name: artifact
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get artifact
+        run: actions/download-artifact@v3
+        with:
+          name: artifact
+      - name: Output artifact content
+        run: ls
+      - name: Deploy artifact
+        run: echo "Deployed...."
