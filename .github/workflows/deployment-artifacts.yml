@@ -17,6 +17,8 @@ jobs:
   build:
     needs: test
     runs-on: ubuntu-latest
+    outputs:
+      filename: ${{ steps.publish.outputs.fname }}
     steps:
       - name: Get project
         uses: actions/checkout@v3
@@ -24,11 +26,14 @@ jobs:
         run: npm install
       - name: Build project
         run: npm run build
+      - name: Publish filename
+        id: publish
+        run: find build/static/js/main.*.js -type f -execdir echo 'fname={}' >> $GITHUB_OUTPUT ';'
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: artifact
-          path: dist
+          path: build
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -39,5 +44,7 @@ jobs:
           name: artifact
       - name: Output artifact content
         run: ls
+      - name: Output filename
+        run: echo "${{ needs.build.outputs.filename }}"
       - name: Deploy artifact
         run: echo "Deployed...."
