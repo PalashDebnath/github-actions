@@ -15,7 +15,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~./npm
-          key: deps-${{ hashFiles('**/package-lock.json') }}
+          key: deps-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: npm install
       - name: Test project
@@ -32,7 +32,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ~./npm
-          key: deps-${{ hashFiles('**/package-lock.json') }}
+          key: deps-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: npm install
       - name: Build project
