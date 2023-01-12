@@ -1,5 +1,6 @@
 name: Deployment Artifacts
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -10,6 +11,11 @@ jobs:
     steps:
       - name: Get project
         uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/chache@v3
+        with:
+          path: ~./npm
+          key: deps-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm install
       - name: Test project
@@ -22,6 +28,11 @@ jobs:
     steps:
       - name: Get project
         uses: actions/checkout@v3
+      - name: Cache dependencies
+        uses: actions/chache@v3
+        with:
+          path: ~./npm
+          key: deps-${{ hashFiles('**/package-lock.json') }}
       - name: Install dependencies
         run: npm install
       - name: Build project
