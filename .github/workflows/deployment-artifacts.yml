@@ -44,7 +44,7 @@ jobs:
         run: npm run build
       - name: Publish filename
         id: publish
-        run: find build/static/js/main.*.js -type f -execdir echo "fname={}" >> $GITHUB_OUTPUT
+        run: find build/static/js/main.*.js -type f -execdir echo "fname={}" >> $GITHUB_OUTPUT ";"
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
