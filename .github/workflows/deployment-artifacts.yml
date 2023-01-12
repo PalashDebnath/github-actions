@@ -8,13 +8,18 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    outputs:
+      cache: ${{ steps.cache.outputs.dir }}
     steps:
       - name: Get project
         uses: actions/checkout@v3
+      - name: Get cache directory path
+        id: cache
+        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
-          path: ~./node_modules
+          path: ${{ steps.cache.outputs.dir }}
           key: deps-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: npm install
@@ -31,7 +36,7 @@ jobs:
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
-          path: ~./node_modules
+          path: ${{ needs.test.outputs.cache }}
           key: deps-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
         run: npm install
@@ -39,7 +44,7 @@ jobs:
         run: npm run build
       - name: Publish filename
         id: publish
-        run: find build/static/js/main.*.js -type f -execdir echo 'fname={}' >> $GITHUB_OUTPUT ';'
+        run: find build/static/js/main.*.js -type f -execdir echo "fname={}" >> $GITHUB_OUTPUT
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
