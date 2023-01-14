@@ -5,28 +5,43 @@ on:
       - main
       - master
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
-    outputs:
-      cache: ${{ steps.cache.outputs.dir }}
     steps:
       - name: Get project
         uses: actions/checkout@v3
-      - name: Get cache directory path
-        id: cache
-        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
       - name: Cache dependencies
+        id: cache-runner
         uses: actions/cache@v3
         with:
-          path: ${{ steps.cache.outputs.dir }}
+          path: node_modules
           key: deps-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
+        if: ${{ steps.cache-runner.outputs.cache-hit != 'true' }}
+        run: npm install
+      - name: Lint project
+        run: echo "Project linting completed successfully!!"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get project
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache-runner
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        if: ${{ steps.cache-runner.outputs.cache-hit != 'true' }}
         run: npm install
       - name: Test project
-        id: run-test
-        run: npm run test
+        id: test-runner
+        run: |
+          npm run test
+          echo "Project testing completed successfully!!"
       - name: Upload test report
-        if: ${{ failure() && steps.run-test.outcome == 'failure' }}
+        if: ${{ failure() && steps.test-runner.outcome == 'failure' }}
         run: echo "Uploaded test report...."
   build:
     needs: test
@@ -37,14 +52,18 @@ jobs:
       - name: Get project
         uses: actions/checkout@v3
       - name: Cache dependencies
+        id: cache-runner
         uses: actions/cache@v3
         with:
-          path: ${{ needs.test.outputs.cache }}
+          path: node_modules
           key: deps-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
+        if: ${{ steps.cache-runner.outputs.cache-hit != 'true' }}
         run: npm install
       - name: Build project
-        run: npm run build
+        run: |
+          npm run build
+          echo "Project building completed successfully!!"
       - name: Publish filename
         id: publish
         run: find build/static/js/main.*.js -type f -execdir echo "fname={}" >> $GITHUB_OUTPUT ";"
@@ -65,5 +84,12 @@ jobs:
         run: ls
       - name: Output filename
         run: echo "${{ needs.build.outputs.filename }}"
-      - name: Deploy artifact
-        run: echo "Deployed...."
+      - name: Deploy project
+        run: echo "Project deployment completed successfully!!"
+  report:
+    needs: [lint, deploy]
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Workflow report
+        run: echo "Workflow report genarated successfully!!"
