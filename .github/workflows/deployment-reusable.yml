@@ -7,8 +7,14 @@ on:
         required: false
         default: build
         type: string
+    outputs:
+      result:
+        description: Store the result of the deployment
+        value: ${{ jobs.deploy.outputs.outcome }}
 jobs:
   deploy:
+    outputs:
+      outcome: ${{ steps.set-output-runner.outputs.result }}
     runs-on: ubuntu-latest
     steps:
       - name: Get artifact
@@ -19,3 +25,6 @@ jobs:
         run: ls
       - name: Project deploy
         run: echo "Project deployment completed successfully!!"
+      - name: Set outputs
+        id: set-output-runner
+        run: echo "result=success" >> @GITHUB_OUTPUT
