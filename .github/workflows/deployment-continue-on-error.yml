@@ -1,4 +1,4 @@
-name: Deployment conditions
+name: Deployment continue on error
 on:
   push:
     branches:
@@ -36,12 +36,11 @@ jobs:
         if: ${{ steps.cache-runner.outputs.cache-hit != 'true' }}
         run: npm install
       - name: Test project
-        id: test-runner
+        continue-on-error: true
         run: |
           npm run test
           echo "Project testing completed successfully!!"
       - name: Upload test report
-        if: ${{ failure() && steps.test-runner.outcome == 'failure' }}
         run: echo "Project test report uploaded successfully!!"
   build:
     needs: test
