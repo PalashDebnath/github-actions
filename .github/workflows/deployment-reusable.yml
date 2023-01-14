@@ -27,4 +27,4 @@ jobs:
         run: echo "Project deployment completed successfully!!"
       - name: Set outputs
         id: set-output-runner
-        run: echo "result=success" >> @GITHUB_OUTPUT
+        run: echo "result=success" >> $GITHUB_OUTPUT
