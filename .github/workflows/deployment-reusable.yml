@@ -1,9 +1,21 @@
 name: Deployment reusable
 on:
   workflow_call:
+    inputs:
+      artifact:
+        description: The arifact file identifier name
+        required: false
+        default: build
+        type: string
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Output
+      - name: Get artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.artifact }}
+      - name: Artifact content
+        run: ls
+      - name: Project deploy
         run: echo "Project deployment completed successfully!!"
