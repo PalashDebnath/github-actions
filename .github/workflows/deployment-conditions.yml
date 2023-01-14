@@ -26,7 +26,7 @@ jobs:
         id: run-test
         run: npm run test
       - name: Upload test report
-        if: failure() && steps.run-test.outcome == "failure"
+        if: ${{ failure() && steps.run-test.outcome == "failure" }}
         run: echo "Uploaded test report...."
   build:
     needs: test
