@@ -1,0 +1,9 @@
+name: Deployment reusable
+on:
+  workflow_call:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Output
+        run: echo "Project deployment completed successfully!!"

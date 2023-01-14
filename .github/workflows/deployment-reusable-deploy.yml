@@ -1,0 +1,84 @@
+name: Deployment using reuseable deploy
+on:
+  push:
+    branches:
+      - main
+      - master
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get project
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache-runner
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        if: ${{ steps.cache-runner.outputs.cache-hit != 'true' }}
+        run: npm install
+      - name: Lint project
+        run: echo "Project linting completed successfully!!"
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get project
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache-runner
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        if: ${{ steps.cache-runner.outputs.cache-hit != 'true' }}
+        run: npm install
+      - name: Test project
+        id: test-runner
+        run: |
+          npm run test
+          echo "Project testing completed successfully!!"
+      - name: Upload test report
+        if: ${{ failure() && steps.test-runner.outcome == 'failure' }}
+        run: echo "Project test report uploaded successfully!!"
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    outputs:
+      filename: ${{ steps.publish.outputs.fname }}
+    steps:
+      - name: Get project
+        uses: actions/checkout@v3
+      - name: Cache dependencies
+        id: cache-runner
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: deps-${{ hashFiles('**/yarn.lock') }}
+      - name: Install dependencies
+        if: ${{ steps.cache-runner.outputs.cache-hit != 'true' }}
+        run: npm install
+      - name: Build project
+        run: |
+          npm run build
+          echo "Project building completed successfully!!"
+      - name: Publish filename
+        id: publish
+        run: find build/static/js/main.*.js -type f -execdir echo "fname={}" >> $GITHUB_OUTPUT ";"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact
+          path: build
+  deploy:
+    needs: build
+    uses: ./.github/workflows/deployment-reusable.yml
+  report:
+    needs: [lint, deploy]
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Workflow report
+        run: echo "Workflow report genarated successfully!!"
