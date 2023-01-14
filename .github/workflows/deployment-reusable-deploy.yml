@@ -76,7 +76,7 @@ jobs:
     needs: build
     uses: ./.github/workflows/deployment-reusable.yml
     with:
-      arifact: arifact
+      artifact: artifact
   report:
     needs: [lint, deploy]
     if: ${{ failure() }}
