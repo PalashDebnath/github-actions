@@ -1,8 +1,9 @@
 name: Deployment using container
 on:
   push:
-    - main
-    - master
+    branches:
+      - main
+      - master
 jobs:
   test:
     runs-on: ubuntu-latest
