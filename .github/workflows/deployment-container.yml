@@ -10,6 +10,8 @@ jobs:
     container:
       image: node:16
     steps:
+      - name: Get project
+        uses: actions/checkout@v3
       - name: Install & cache dependencies
         uses: ./.github/actions/install-and-cache
       - name: Test project
