@@ -1,0 +1,19 @@
+name: Deployment using container
+on:
+  push:
+    - main
+    - master
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: node:16
+    steps:
+      - name: Get project
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        run: yarn Install
+      - name: Test project
+        run: yarn test
+      - name: Ouput information
+        run: echo "Project tested successfully!!"
