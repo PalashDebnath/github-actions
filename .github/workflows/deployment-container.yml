@@ -12,9 +12,9 @@ jobs:
     steps:
       - name: Get project
         uses: actions/checkout@v3
-      - name: Install dependencies
-        run: yarn install
+      - name: Install & cache dependencies
+        uses: ./.github/actions/install-and-cache
       - name: Test project
-        run: yarn test
+        run: npm run test
       - name: Ouput information
         run: echo "Project tested successfully!!"

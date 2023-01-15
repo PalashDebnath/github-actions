@@ -12,15 +12,8 @@ jobs:
     steps:
       - name: Get project
         uses: actions/checkout@v3
-      - name: Cache dependencies
-        id: cache-runner
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: deps-${{ hashFiles('**/yarn.lock') }}
-      - name: Install dependencies
-        if: ${{ steps.cache-runner.outputs.cache-hit != 'true' }}
-        run: npm install
+      - name: Install & cache dependencies
+        uses: ./.github/actions/install-and-cache
       - name: Lint project
         run: echo "Project linting completed successfully!!"
   test:
@@ -28,15 +21,8 @@ jobs:
     steps:
       - name: Get project
         uses: actions/checkout@v3
-      - name: Cache dependencies
-        id: cache-runner
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: deps-${{ hashFiles('**/yarn.lock') }}
-      - name: Install dependencies
-        if: ${{ steps.cache-runner.outputs.cache-hit != 'true' }}
-        run: npm install
+      - name: Install & cache dependencies
+        uses: ./.github/actions/install-and-cache
       - name: Test project
         continue-on-error: true
         run: |
@@ -52,15 +38,8 @@ jobs:
     steps:
       - name: Get project
         uses: actions/checkout@v3
-      - name: Cache dependencies
-        id: cache-runner
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: deps-${{ hashFiles('**/yarn.lock') }}
-      - name: Install dependencies
-        if: ${{ steps.cache-runner.outputs.cache-hit != 'true' }}
-        run: npm install
+      - name: Install & cache dependencies
+        uses: ./.github/actions/install-and-cache
       - name: Build project
         run: |
           npm run build

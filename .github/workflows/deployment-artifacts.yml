@@ -10,21 +10,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    outputs:
-      cache: ${{ steps.cache.outputs.dir }}
     steps:
       - name: Get project
         uses: actions/checkout@v3
-      - name: Get cache directory path
-        id: cache
-        run: echo "dir=$(npm config get cache)" >> $GITHUB_OUTPUT
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.cache.outputs.dir }}
-          key: deps-${{ hashFiles('**/yarn.lock') }}
-      - name: Install dependencies
-        run: npm install
+      - name: Install & cache dependencies
+        uses: ./.github/actions/install-and-cache
       - name: Test project
         run: npm run test
   build:
@@ -35,13 +25,8 @@ jobs:
     steps:
       - name: Get project
         uses: actions/checkout@v3
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: ${{ needs.test.outputs.cache }}
-          key: deps-${{ hashFiles('**/yarn.lock') }}
-      - name: Install dependencies
-        run: npm install
+      - name: Install & cache dependencies
+        uses: ./.github/actions/install-and-cache
       - name: Build project
         run: npm run build
       - name: Publish filename
@@ -65,4 +50,4 @@ jobs:
       - name: Output filename
         run: echo "${{ needs.build.outputs.filename }}"
       - name: Deploy artifact
-        run: echo "Deployed...."
+        run: echo "Project deployed successfully!!"

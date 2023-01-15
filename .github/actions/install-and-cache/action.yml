@@ -1,0 +1,15 @@
+name: "Install & cache dependencies"
+description: "Install and cache dependencies via npm"
+runs:
+  using: "composite"
+  steps:
+    - name: Cache dependencies
+      id: cache-deps
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: deps-${{ hashFiles('**/yarn.lock') }}
+    - name: Install dependencies
+      if: ${{ steps.cache-deps.outputs.cache-hit != 'true' }}
+      run: npm install
+      shell: bash
