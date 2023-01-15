@@ -3,6 +3,8 @@ description: "Install and cache dependencies via npm"
 runs:
   using: "composite"
   steps:
+    - name: Get project
+      uses: actions/checkout@v3
     - name: Cache dependencies
       id: cache-deps
       uses: actions/cache@v3
